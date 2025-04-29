@@ -4,8 +4,8 @@ from .database_connection import DatabaseConnection
 
 class BlogDatabaseService:
     def __init__(self, database_url:str, echo_status:bool = True):
-        conn: DatabaseConnection = DatabaseConnection(database_url)
-        session: Session = next(conn.get_session())
+        self.conn: DatabaseConnection = DatabaseConnection(database_url)
+        self.session: Session = next(self.conn.get_session())
         
     def create_blog(self, user_id, blog:Blog):
         user = self.session.get(User, user_id)
