@@ -9,7 +9,7 @@ class DatabaseConnection():
         try:
             SQLModel.metadata.create_all(self.engine)
         except Exception as e:
-            print(f"Error occurred {e}")
+            print(e)
             raise DatabaseException("Failed to initialize database.")
     
     def get_session(self):

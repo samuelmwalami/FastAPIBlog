@@ -4,4 +4,4 @@ class DatabaseException(Exception):
         self.message = message
         
     def __str__(self):
-        print(f"{self.message} error occurred")
+        print(f"ERROR:{self.message}")
