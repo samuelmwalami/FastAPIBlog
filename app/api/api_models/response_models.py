@@ -1,17 +1,22 @@
-from pydantic import BaseModel
+import uuid
+from pydantic import BaseModel, EmailStr
+
+
 
 class BlogResponse(BaseModel):
-    blog_id: str
+    id: uuid.UUID
     title: str 
     content: str
     published_at: str
     modified_at: str
-    author_id: str
+    author_id: uuid.UUID
+    
+ 
 
 class UserResponse(BaseModel):
-    user_id: str
+    id: uuid.UUID
     user_name: str 
     first_name: str
     last_name: str
-    email: str
+    email: EmailStr
     
