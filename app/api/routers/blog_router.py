@@ -24,7 +24,7 @@ async def create_blog(blog: BlogCreate):
 async def get_blog(blog_id: str):
     session = BlogDatabaseService(DATABASE_ENGINE)
     blog = session.get_blog_by_id(blog_id)
-    if not update_blog_content:
+    if not blog:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"Blog with blog id {blog_id} does not exist")
     return blog
@@ -40,7 +40,7 @@ async def update_blog_title(blog: BlogUpdateTitle):
     session = BlogDatabaseService(DATABASE_ENGINE)
     updated_blog = session.update_blog_title(blog_id=blog.blog_id,
                                              title=blog.title)
-    if not update_blog_content:
+    if not updated_blog:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"Blog with blog id {blog.blog_id} does not exist")
     return updated_blog
@@ -58,8 +58,8 @@ async def update_blog_content(blog: BlogUpdateContent):
 @router.delete("/{blog_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_blog_by_id(blog_id: str):
     session = BlogDatabaseService(DATABASE_ENGINE)
-    session.delete_blog_by_id(blog_id)
-    if not update_blog_content:
+    deleted_blog = session.delete_blog_by_id(blog_id)
+    if not deleted_blog:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"Blog with blog id {blog_id} does not exist")
     

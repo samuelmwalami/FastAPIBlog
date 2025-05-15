@@ -1,3 +1,4 @@
+import uuid
 from sqlmodel import Session, select
 from .database_models import User
 from .database_exceptions import DatabaseException
@@ -6,6 +7,14 @@ class UserDatabaseService():
     def __init__(self, database_engine):
         self.engine = database_engine
         self.session: Session = next(self.get_session())
+    
+    @staticmethod
+    def check_valid_uuid(blog_id):
+        try:
+            if uuid.UUID(blog_id):
+                return True
+        except ValueError:
+            return False
     
     def get_session(self):
         with Session(self.engine) as session:
@@ -35,6 +44,9 @@ class UserDatabaseService():
             raise DatabaseException("Failed to read users from database.")
         
     def get_user_by_id(self, user_id: str) -> User | None:
+        # Check wether user is a valid uuid
+        if not UserDatabaseService.check_valid_uuid(user_id):
+            return None
         try:
             user: User = self.session.get(User,user_id)
             if user:
@@ -45,16 +57,19 @@ class UserDatabaseService():
             print(e)
             raise DatabaseException("Failed to read user from database")
         
-    def update_user_full_name(self, user_id: str, name) -> User | None :
+    def update_user_full_name(self, user_id: str, full_name) -> User | None :
+        # Check wether user is a valid uuid
+        if not UserDatabaseService.check_valid_uuid(user_id):
+            return None
         try:
             user: User = self.session.get(User, user_id)
             if user:
-                user.first_name = name.first_name
-                user.last_name = name.last_name
+                user.first_name = full_name.first_name
+                user.last_name = full_name.last_name
                 self.session.add(user)
                 self.session.commit()
                 self.session.refresh(user)
-                return User
+                return user
             else:
                 return None
         except Exception as e:
@@ -63,6 +78,9 @@ class UserDatabaseService():
     
     
     def update_user_email(self, user_id: str, email: str) -> User | None:
+        # Check wether user is a valid uuid
+        if not UserDatabaseService.check_valid_uuid(user_id):
+            return None
         try:
             user: User = self.session.get(User, user_id)
             if user:
@@ -70,7 +88,7 @@ class UserDatabaseService():
                 self.session.add(user)
                 self.session.commit()
                 self.session.refresh(user)
-                return User
+                return user
             else:
                 return None
         except Exception as e:
@@ -78,11 +96,13 @@ class UserDatabaseService():
             raise DatabaseException(f"Failed to update email for user with id {user_id}")
     
     def delete_user(self,user_id) -> None:
+        # Check wether user is a valid uuid
+        if not UserDatabaseService.check_valid_uuid(user_id):
+            return None
         try:
             user = self.session.get(User, user_id)
             self.session.delete(user)
-            if not self.session.get(user_id):
-                return None
+            return self.session.get(User, user_id)                
         except Exception as e:
             print(e)
             raise DatabaseException("Failed to delete user with id {user_id} from database.")

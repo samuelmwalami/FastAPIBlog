@@ -1,15 +1,16 @@
 import uuid
+from datetime import datetime
 from pydantic import BaseModel, EmailStr
 
 
 
 class BlogResponse(BaseModel):
-    id: uuid.UUID
+    id: uuid.UUID 
     title: str 
-    content: str
-    published_at: str
-    modified_at: str
-    author_id: uuid.UUID
+    content: str 
+    published_at: datetime 
+    modified_at: datetime
+    author_id: uuid.UUID 
     
  
 
