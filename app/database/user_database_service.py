@@ -1,5 +1,5 @@
 import uuid
-from sqlmodel import Session, select
+from sqlmodel import Session, select, col
 from .database_models import User
 from .database_exceptions import DatabaseException
 
@@ -20,7 +20,9 @@ class UserDatabaseService():
         with Session(self.engine) as session:
             yield session
         
-    def create_user(self,user) -> User:
+    def create_user(self,user) -> User | None:
+        if self.session.exec(select(User).where(col(User.first_name) == user.first_name)).one():
+            return None
         try:
             user = User(user_name=user.user_name,
                         first_name=user.first_name,
@@ -44,7 +46,7 @@ class UserDatabaseService():
             raise DatabaseException("Failed to read users from database.")
         
     def get_user_by_id(self, user_id: str) -> User | None:
-        # Check wether user is a valid uuid
+        # Check wether user_id is a valid uuid
         if not UserDatabaseService.check_valid_uuid(user_id):
             return None
         try:
@@ -58,7 +60,7 @@ class UserDatabaseService():
             raise DatabaseException("Failed to read user from database")
         
     def update_user_full_name(self, user_id: str, full_name) -> User | None :
-        # Check wether user is a valid uuid
+        # Check wether user_id is a valid uuid
         if not UserDatabaseService.check_valid_uuid(user_id):
             return None
         try:
@@ -78,7 +80,7 @@ class UserDatabaseService():
     
     
     def update_user_email(self, user_id: str, email: str) -> User | None:
-        # Check wether user is a valid uuid
+        # Check wether user_id is a valid uuid
         if not UserDatabaseService.check_valid_uuid(user_id):
             return None
         try:
@@ -96,7 +98,7 @@ class UserDatabaseService():
             raise DatabaseException(f"Failed to update email for user with id {user_id}")
     
     def delete_user(self,user_id) -> None:
-        # Check wether user is a valid uuid
+        # Check wether user_id is a valid uuid
         if not UserDatabaseService.check_valid_uuid(user_id):
             return None
         try:

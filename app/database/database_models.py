@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 
 class User(SQLModel, table=True):
     id: uuid.UUID = Field(primary_key=True, default_factory=uuid.uuid4)
-    user_name: str = Field(index=True)
+    user_name: str = Field(index=True, unique=True)
     first_name: str
     last_name: str
     email: str

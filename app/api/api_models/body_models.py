@@ -13,7 +13,7 @@ class BlogUpdateContent(BaseModel):
     content: str
     
 class UserCreate(BaseModel):
-    username: str
+    user_name: str
     first_name: str
     last_name: str
     email: EmailStr

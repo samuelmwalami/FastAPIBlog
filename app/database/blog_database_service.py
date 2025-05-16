@@ -83,7 +83,8 @@ class BlogDatabaseService:
                 self.session.refresh(blog)
             return blog
            
-        except:
+        except Exception as e:
+            print(e)
             raise DatabaseException(f"Failed to update blog content with blog id {blog_id}")
         
     def delete_blog_by_id(self, blog_id: str) -> Blog | None:
@@ -97,6 +98,7 @@ class BlogDatabaseService:
                 self.session.delete(blog)
                 self.session.commit()
             return self.session.get(Blog, blog_id)
-        except:
+        except Exception as e:
+            print(e)
             raise DatabaseException(f"Failed to delete blog with blog id {blog_id}")
         

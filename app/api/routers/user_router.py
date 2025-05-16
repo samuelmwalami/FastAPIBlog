@@ -13,6 +13,9 @@ router = APIRouter(prefix="/user")
 async def register_user(user: UserCreate):
     session = UserDatabaseService(DATABASE_ENGINE)
     new_user = session.create_user(user)
+    if not new_user:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT,
+                            detail="User name already taken")
     return new_user
 
 
@@ -32,7 +35,7 @@ async def get_users():
     return users
     
 
-@router.patch("/{user_id},", status_code=status.HTTP_200_OK,response_model=UserResponse)
+@router.patch("/name/{user_id},", status_code=status.HTTP_200_OK,response_model=UserResponse)
 async def update_user_full_name(user_id: str, name: UserUpdateName):
     session = UserDatabaseService(DATABASE_ENGINE)
     user = session.update_user_full_name(user_id, name)
@@ -42,7 +45,7 @@ async def update_user_full_name(user_id: str, name: UserUpdateName):
     return user
 
 
-@router.patch("/,", status_code=status.HTTP_200_OK,response_model=UserResponse)
+@router.patch("/email/{user_id},", status_code=status.HTTP_200_OK,response_model=UserResponse)
 async def update_user_email(user_id: str, email: UserUpdateEmail):
     session = UserDatabaseService(DATABASE_ENGINE)
     user = session.update_user_email(user_id, email.email)

@@ -10,7 +10,7 @@ class DatabaseConnection():
     #Creates database and tables
     def initialize_database(self):
         try:
-            SQLModel.metadata.create_all(self.engine)
+            SQLModel.metadata.create_all(create_engine(self.database_url))
         except Exception as e:
             print(e)
             raise DatabaseException("Failed to initialize database.")
