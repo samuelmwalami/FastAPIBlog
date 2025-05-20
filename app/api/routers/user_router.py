@@ -1,22 +1,13 @@
 from fastapi import APIRouter, status, HTTPException
 from app.api.api_models.response_models import UserResponse
-from app.api.api_models.body_models import UserCreate, UserUpdateName, UserUpdateEmail
+from app.api.api_models.body_models import UserUpdateName, UserUpdateEmail
 from app.database import DatabaseConnection, UserDatabaseService
-from app.config.config import Settings
+from app.config.config import Settings, DATABASE_ENGINE
 
 settings = Settings()
 DATABASE_ENGINE = DatabaseConnection(settings.database_url).get_engine()
 
 router = APIRouter(prefix="/user")
-
-@router.post("/", status_code=status.HTTP_201_CREATED, response_model=UserResponse)
-async def register_user(user: UserCreate):
-    session = UserDatabaseService(DATABASE_ENGINE)
-    new_user = session.create_user(user)
-    if not new_user:
-        raise HTTPException(status_code=status.HTTP_409_CONFLICT,
-                            detail="User name already taken")
-    return new_user
 
 
 @router.get("/{user_id}", status_code=status.HTTP_200_OK, response_model=UserResponse)
