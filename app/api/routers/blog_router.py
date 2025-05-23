@@ -12,7 +12,7 @@ settings = Settings()
 DATABASE_ENGINE = DatabaseConnection(settings.database_url).get_engine()
 dummy_user_id="b97530cb-6658-4d52-b2fc-afea521cdc86"
 
-router = APIRouter(prefix="/blog")
+router = APIRouter(prefix="/blog", tags=["Blog"])
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=BlogResponse)
 async def create_blog(blog: BlogCreate):

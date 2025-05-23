@@ -21,3 +21,8 @@ class UserResponse(BaseModel):
     last_name: str
     email: EmailStr
     
+class Token(BaseModel):
+    token_type: str
+    token: str
+    
+    

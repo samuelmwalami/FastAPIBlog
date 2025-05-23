@@ -8,6 +8,7 @@ class User(SQLModel, table=True):
     first_name: str
     last_name: str
     email: str
+    password: str = Field(index=True)
     
     blogs: list["Blog"] | None = Relationship(back_populates="author")
 

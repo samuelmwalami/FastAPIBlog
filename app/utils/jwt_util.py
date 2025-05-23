@@ -9,7 +9,7 @@ class JWTUtil:
         
     def get_token_from_dict(self, payload: dict) -> str:
         to_update = payload.copy()
-        to_update.update({"exp": self.expires_delta})
+        to_update.update({"exp": str(self.expires_delta)})
         token = jwt.encode(to_update, self.secret, self.algorithm)
         return token
     

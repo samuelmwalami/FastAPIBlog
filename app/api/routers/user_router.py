@@ -1,13 +1,13 @@
 from fastapi import APIRouter, status, HTTPException
 from app.api.api_models.response_models import UserResponse
-from app.api.api_models.body_models import UserUpdateName, UserUpdateEmail
+from app.api.api_models.body_models import UserUpdateName, UserUpdateEmail, UserCreate
 from app.database import DatabaseConnection, UserDatabaseService
 from app.config.config import Settings, DATABASE_ENGINE
 
 settings = Settings()
 DATABASE_ENGINE = DatabaseConnection(settings.database_url).get_engine()
 
-router = APIRouter(prefix="/user")
+router = APIRouter(prefix="/user",tags=["User"])
 
 
 @router.get("/{user_id}", status_code=status.HTTP_200_OK, response_model=UserResponse)
