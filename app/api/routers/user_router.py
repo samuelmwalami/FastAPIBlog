@@ -2,7 +2,7 @@ from fastapi import APIRouter, status, HTTPException
 from app.api.api_models.response_models import UserResponse
 from app.api.api_models.body_models import UserUpdateName, UserUpdateEmail
 from app.database import UserDatabaseService
-from app.config.config import SETTINGS, DATABASE_ENGINE
+from app.config.config import DATABASE_ENGINE
 
 
 

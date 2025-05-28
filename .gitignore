@@ -1,5 +1,5 @@
 *__pycache__*
 /app/test/db_test.py
 /app/test/st.py
-/app/config/.env
+.env
 .venv/
