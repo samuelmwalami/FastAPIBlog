@@ -1,15 +1,10 @@
 from fastapi import APIRouter,status, HTTPException
 from app.api.api_models.response_models import BlogResponse
 from app.api.api_models.body_models import BlogCreate, BlogUpdateContent, BlogUpdateTitle
-from app.database import DatabaseConnection, BlogDatabaseService
-from app.config.config import Settings
+from app.database import BlogDatabaseService
+from app.config.config import DATABASE_ENGINE
 
-# Object that returns environment variable
-settings = Settings()
 
-# Object that establishes connection to the database via sqlmodel
-
-DATABASE_ENGINE = DatabaseConnection(settings.database_url).get_engine()
 dummy_user_id="b97530cb-6658-4d52-b2fc-afea521cdc86"
 
 router = APIRouter(prefix="/blog", tags=["Blog"])
