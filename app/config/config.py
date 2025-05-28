@@ -3,9 +3,9 @@ from app.database import DatabaseConnection
 
 # ENVIRONMENT VARIABLE
 class Settings(BaseSettings):
-    database_url: str
-    jwt_algorithm: str
-    jwt_secret: str
+    database_url: str = "postgresql://postgres:udAuUZTooEDDAdONDdHmJGZboduiBynb@trolley.proxy.rlwy.net:20372/railway"
+    jwt_algorithm: str = "HS256"
+    jwt_secret: str = "1234"
     
     model_config = SettingsConfigDict(
         env_file = ".env",
