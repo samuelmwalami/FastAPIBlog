@@ -49,7 +49,6 @@ class UserDatabaseService():
             raise DatabaseException("Failed to read users from database.")
 
     def get_user_by_id(self, user_id: str) -> User | None:
-        # Check wether user_id is a valid uuid
         if not UserDatabaseService.check_valid_uuid(user_id):
             return None
         try:
@@ -62,14 +61,23 @@ class UserDatabaseService():
             print(e)
             raise DatabaseException("Failed to read user from database")
         
-    def get_user_by_name(self, user_name:str):
+    def get_user_by_name(self, user_name:str) -> User | None:
         try:
             user: User = self.session.exec(select(User).where(col(User.user_name) == user_name)).first()
             return user
         except Exception as e:
             print(e)
             raise DatabaseException(f"Failed to retrieve user by user_name {user_name}")
-
+        
+    def get_user_by_email(self, email:str) -> User | None:
+        try:
+            user: User = self.session.exec(select(User).where(col(User.email) == email)).one()
+            return user
+        except Exception as e:
+            print(e)
+            DatabaseException(f"Failed to retrieve user by email {email}")
+            
+        
     def update_user_full_name(self, user_id: str, full_name) -> User | None:
         # Check wether user_id is a valid uuid
         if not UserDatabaseService.check_valid_uuid(user_id):

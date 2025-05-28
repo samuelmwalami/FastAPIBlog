@@ -31,7 +31,7 @@ async def login_for_token(login_data: Annotated[OAuth2PasswordRequestForm, Depen
     user_name = login_data.username
     password = login_data.password
     session = UserDatabaseService(DATABASE_ENGINE)
-    user = session.get_user_by_name(user_name)
+    user = session.get_user_by_email(user_name)
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
                             detail= "Invalid Credentials",
