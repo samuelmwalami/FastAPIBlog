@@ -1,5 +1,6 @@
-from sqlmodel import SQLModel, Field, Relationship
 import uuid
+from typing import Optional
+from sqlmodel import SQLModel, Field, Relationship
 from datetime import datetime, timezone
 
 class User(SQLModel, table=True):
@@ -11,6 +12,13 @@ class User(SQLModel, table=True):
     password: str = Field(index=True)
     
     blogs: list["Blog"] | None = Relationship(back_populates="author")
+    
+   
+    access_token: Optional["AccessToken"] = Relationship(back_populates="user")
+    
+    comments: list["Comment"] | None = Relationship(back_populates="user")
+    
+    reactions: list["Reaction"] | None = Relationship(back_populates="user")
 
 
 class Blog(SQLModel, table=True):
@@ -22,3 +30,38 @@ class Blog(SQLModel, table=True):
     
     author_id: uuid.UUID = Field(default_factory=uuid.uuid4, foreign_key="user.id")
     author: User = Relationship(back_populates="blogs")
+    
+    comments: list["Comment"] | None = Relationship(back_populates="blog")
+    
+    reactions: list["Reaction"] | None = Relationship(back_populates="blog")
+    
+    
+
+
+class AccessToken(SQLModel, table=True):
+    id: uuid.UUID = Field(primary_key=True, default_factory=uuid.uuid4)
+    token: str = Field(index=True, unique=True)
+    
+    user_id: uuid.UUID = Field(foreign_key="user.id")
+    user: User = Relationship(back_populates="access_token")
+    
+class Comment(SQLModel, table=True):
+    id: uuid.UUID = Field(primary_key=True, default_factory=uuid.uuid4)
+    content: str = Field(index=True)
+    
+    user_id: uuid.UUID = Field(foreign_key="user.id")
+    user: User = Relationship(back_populates="comments")
+    
+    blog_id: uuid.UUID = Field(foreign_key="blog.id")
+    blog: Blog = Relationship(back_populates="comments")
+    
+class Reaction(SQLModel, table=True):
+    id: uuid.UUID = Field(primary_key=True, default_factory=uuid.uuid4)
+    reaction: str = Field(index=True)
+    
+    user_id: uuid.UUID = Field(foreign_key="user.id")
+    user: User = Relationship(back_populates="reactions")
+    
+    blog_id: uuid.UUID = Field(foreign_key="blog.id")
+    blog: "Blog" = Relationship(back_populates="reactions")
+    

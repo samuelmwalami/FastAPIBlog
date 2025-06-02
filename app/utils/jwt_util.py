@@ -13,9 +13,10 @@ class JWTUtil:
         token = jwt.encode(to_update, self.secret, self.algorithm)
         return token
     
-    def get_dict_from_jwt(self, token) -> dict:
+    def get_dict_from_jwt(self, token) -> dict | None:
         try:
             payload = jwt.decode(token, self.secret, self.algorithm)
             return payload
         except JWTError as e:
             print(e)
+            return None
