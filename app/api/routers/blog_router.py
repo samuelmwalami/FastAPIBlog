@@ -6,7 +6,7 @@ from app.config.config import DATABASE_ENGINE
 from app.api.dependencies.oauth2_dependencies import get_user, decode_token
 
 
-dummy_user_id="b97530cb-6658-4d52-b2fc-afea521cdc86"
+
 
 router = APIRouter(prefix="/blog", tags=["Blog"])
 

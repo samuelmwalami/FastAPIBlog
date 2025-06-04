@@ -25,7 +25,7 @@ class BlogDatabaseService:
     def create_blog(self, user_id: str, blog):
         # get user from database
         user = UserDatabaseService(self.engine).get_user_by_id(user_id)    
-        if user and user == type(User):    
+        if user:    
             blog = Blog(title=blog.title,
                     content=blog.content,
                     author=user)

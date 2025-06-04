@@ -1,5 +1,5 @@
 from jose import jwt, JWTError
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 class JWTUtil:
     def __init__(self,algorithm:str, secret: str, expires_delta:timedelta) -> None:
@@ -9,7 +9,7 @@ class JWTUtil:
         
     def get_token_from_dict(self, payload: dict) -> str:
         to_update = payload.copy()
-        to_update.update({"exp": datetime.now() + self.expires_delta})
+        to_update.update({"exp": datetime.now(timezone.utc) + self.expires_delta})
         token = jwt.encode(to_update, self.secret, self.algorithm)
         return token
     
