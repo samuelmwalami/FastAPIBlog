@@ -4,14 +4,14 @@ from app.database import DatabaseConnection
 
 # ENVIRONMENT VARIABLE
 class Settings(BaseSettings):
-    database_url: str = Field(..., env="DATABASE_URL")
-    jwt_algorithm: str = Field(..., env="JWT_ALGORITHM")
-    jwt_secret: str = Field(..., env="JWT_SECRET")
+    database_url: str 
+    jwt_algorithm: str 
+    jwt_secret: str 
     
-    # model_config = SettingsConfigDict(
-    #     env_file = ".env",
-    #     env_file_encoding = "utf-8"
-    # )
+    model_config = SettingsConfigDict(
+        env_file = ".env",
+        env_file_encoding = "utf-8"
+    )
     
 
 # DATABASE SETTINGS    
