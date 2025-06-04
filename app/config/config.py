@@ -5,8 +5,8 @@ from app.database import DatabaseConnection
 # ENVIRONMENT VARIABLE
 class Settings(BaseSettings):
     database_url: str = Field(..., alias="DATABASE_URL")
-    jwt_algorithm: str = Field(..., alias="DATABASE_URL")
-    jwt_secret: str = Field(..., alias="DATABASE_URL")
+    jwt_algorithm: str = Field(..., alias="JWT_ALGORITHM")
+    jwt_secret: str = Field(..., alias="JWT_SECRET")
     
     model_config = SettingsConfigDict(
         env_file = ".env",
