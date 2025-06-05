@@ -26,3 +26,7 @@ class UserUpdateName(BaseModel):
     
 class UserUpdateEmail(BaseModel):
     email: EmailStr
+    
+class UserUpdatePassword(BaseModel):
+    email: EmailStr
+    password: str

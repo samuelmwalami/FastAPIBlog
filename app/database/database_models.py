@@ -19,6 +19,9 @@ class User(SQLModel, table=True):
     comments: list["Comment"] | None = Relationship(back_populates="user")
     
     reactions: list["Reaction"] | None = Relationship(back_populates="user")
+    
+    # followers: list["Follow"] | None = Relationship(back_populates="follower", link_model=Follow)
+    # followings: list["Follow"] | None = Relationship(back_populates="following", link_model=Follow)
 
 
 class Blog(SQLModel, table=True):
@@ -64,4 +67,13 @@ class Reaction(SQLModel, table=True):
     
     blog_id: uuid.UUID = Field(foreign_key="blog.id")
     blog: "Blog" = Relationship(back_populates="reactions")
+    
+    
+# class Follow(SQLModel, table=True):
+#     id: uuid.UUID = Field(primary_key=True, default_factory=uuid.uuid4)
+#     follower_id: uuid.UUID = Field(foreign_key="user.id")
+#     following_id: uuid.UUID = Field(foreign_key="user.id")
+    
+#     follower: User = Relationship(back_populates="followers")
+#     following: User = Relationship(back_populates="followings")
     

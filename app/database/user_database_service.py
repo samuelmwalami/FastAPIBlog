@@ -129,3 +129,16 @@ class UserDatabaseService():
             print(e)
             raise DatabaseException(
                 "Failed to delete user with id {user_id} from database.")
+            
+    def update_user_password(self, user_email: str, new_password):
+        try:
+            user = self.session.exec(select(User).where(col(User.email) == user_email)).first()
+            if not user:
+                return user
+            user.password = new_password
+            self.session.add(user)
+            self.session.commit()
+            self.session.refresh(user)
+            return user
+        except Exception as e:
+            print(e)
