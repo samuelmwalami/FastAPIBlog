@@ -1,9 +1,10 @@
+from typing import Annotated
 from fastapi import APIRouter,status, HTTPException, Depends
 from app.api.api_models.response_models import BlogResponse
 from app.api.api_models.body_models import BlogCreate, BlogUpdateContent, BlogUpdateTitle
-from app.database import BlogDatabaseService
+from app.database import BlogDatabaseService, UserToken
 from app.config.config import DATABASE_ENGINE
-from app.api.dependencies.oauth2_dependencies import get_user, decode_token
+from app.api.api_dependencies.oauth2_dependencies import get_current_user, decode_token, verify_jwt_id_matches_user_id
 
 
 
@@ -11,9 +12,9 @@ from app.api.dependencies.oauth2_dependencies import get_user, decode_token
 router = APIRouter(prefix="/blog", tags=["Blog"])
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=BlogResponse)
-async def create_blog(blog: BlogCreate, user = Depends(get_user)):
+async def create_blog(blog: BlogCreate, user: Annotated[UserToken, Depends(get_current_user)]):
     session = BlogDatabaseService(DATABASE_ENGINE)
-    new_blog = session.create_blog(user_id=user.name,blog=blog)
+    new_blog = session.create_blog(user_id=user.id,blog=blog)
     return new_blog
 
 @router.get("/{blog_id}", status_code=status.HTTP_200_OK, response_model=BlogResponse, dependencies=[Depends(decode_token)])
@@ -26,14 +27,18 @@ async def get_blog(blog_id: str):
     return blog
 
 @router.get("/", status_code=status.HTTP_200_OK, response_model=list[BlogResponse])
-async def get_blogs(user = Depends(get_user))-> list:
+async def get_blogs(user = Depends(get_current_user))-> list:
     session = BlogDatabaseService(DATABASE_ENGINE)
     blogs = session.get_blogs()
     return blogs
 
 @router.patch("/title/", status_code=status.HTTP_200_OK, response_model=BlogResponse, dependencies=[Depends(decode_token)])
-async def update_blog_title(blog: BlogUpdateTitle):
+async def update_blog_title(blog: BlogUpdateTitle, authenticated_user: Annotated[UserToken, Depends(get_current_user)]):
     session = BlogDatabaseService(DATABASE_ENGINE)
+    
+    blog_author = session.get_blog_by_id(blog.blog_id).author
+    author_id = blog_author.id
+    verify_jwt_id_matches_user_id(author_id, authenticated_user)
     updated_blog = session.update_blog_title(blog_id=blog.blog_id,
                                              title=blog.title)
     if not updated_blog:
@@ -42,8 +47,13 @@ async def update_blog_title(blog: BlogUpdateTitle):
     return updated_blog
 
 @router.patch("/content/", status_code=status.HTTP_200_OK, response_model=BlogResponse, dependencies=[Depends(decode_token)])
-async def update_blog_content(blog: BlogUpdateContent):
+async def update_blog_content(blog: BlogUpdateContent, authenticated_user: Annotated[UserToken, Depends(get_current_user)]):
     session = BlogDatabaseService(DATABASE_ENGINE)
+    
+    blog_author = session.get_blog_by_id(blog.blog_id).author
+    author_id = blog_author.id
+    verify_jwt_id_matches_user_id(author_id, authenticated_user)
+    
     updated_blog = session.update_blog_content(blog_id=blog.blog_id,
                                              content=blog.content)
     if not updated_blog:
@@ -52,8 +62,13 @@ async def update_blog_content(blog: BlogUpdateContent):
     return updated_blog
 
 @router.delete("/{blog_id}", status_code=status.HTTP_204_NO_CONTENT, dependencies=[Depends(decode_token)])
-async def delete_blog_by_id(blog_id: str ):
+async def delete_blog_by_id(blog_id: str, authenticated_user: Annotated[UserToken, Depends(get_current_user)]):
     session = BlogDatabaseService(DATABASE_ENGINE)
+    
+    blog_author = session.get_blog_by_id(blog_id).author
+    author_id = blog_author.id
+    verify_jwt_id_matches_user_id(author_id, authenticated_user)
+    
     deleted_blog = session.delete_blog_by_id(blog_id)
     if not deleted_blog:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,

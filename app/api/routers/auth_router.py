@@ -5,10 +5,10 @@ from fastapi.security import OAuth2PasswordRequestForm
 from app.api.api_models.response_models import UserResponse, Token
 from app.api.api_models.body_models import UserCreate, UserUpdatePassword
 from app.config.config import DATABASE_ENGINE, SETTINGS
-from app.database import UserDatabaseService
+from app.database import UserDatabaseService, UserToken
 from app.utils.hash_util import Hashing
 from app.utils.jwt_util import JWTUtil
-from app.api.dependencies.oauth2_dependencies import get_user
+from app.api.api_dependencies.oauth2_dependencies import get_current_user
 
 hashing_context = Hashing()
 jwt_context = JWTUtil(SETTINGS.jwt_algorithm,SETTINGS.jwt_secret,timedelta(minutes=30))
@@ -53,7 +53,8 @@ async def login_for_token(login_data: Annotated[OAuth2PasswordRequestForm, Depen
 
 
 @router.get("/me",status_code=status.HTTP_200_OK, response_model=UserResponse)
-async def get_current_user(user = Depends(get_user)):
+async def get_current_user(user: Annotated[UserToken, Depends(get_current_user)]):
+    print(user.id)
     return user
 
 @router.post("/reset",status_code=status.HTTP_200_OK, response_model=UserResponse)

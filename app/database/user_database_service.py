@@ -12,7 +12,7 @@ class UserDatabaseService():
     @staticmethod
     def check_valid_uuid(blog_id):
         try:
-            if uuid.UUID(blog_id):
+            if isinstance(blog_id, uuid.UUID):
                 return True
         except ValueError:
             return False
@@ -78,7 +78,7 @@ class UserDatabaseService():
             DatabaseException(f"Failed to retrieve user by email {email}")
             
         
-    def update_user_full_name(self, user_id: str, full_name) -> User | None:
+    def update_user_full_name(self, user_id, full_name) -> User | None:
         # Check wether user_id is a valid uuid
         if not UserDatabaseService.check_valid_uuid(user_id):
             return None
