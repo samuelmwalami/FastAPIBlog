@@ -12,7 +12,7 @@ class UserDatabaseService():
     @staticmethod
     def check_valid_uuid(blog_id):
         try:
-            if isinstance(blog_id, uuid.UUID):
+            if uuid.UUID(blog_id):
                 return True
         except ValueError:
             return False

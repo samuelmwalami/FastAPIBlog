@@ -28,7 +28,7 @@ class Blog(SQLModel, table=True):
     id: uuid.UUID = Field(primary_key=True,default_factory=uuid.uuid4)
     title: str = Field(index=True)
     content: str
-    published_at: datetime = Field(default=datetime.now(timezone.utc))
+    published_at: datetime = Field()
     modified_at: datetime = Field(default=datetime.now(timezone.utc))
     
     author_id: uuid.UUID = Field(default_factory=uuid.uuid4, foreign_key="user.id")

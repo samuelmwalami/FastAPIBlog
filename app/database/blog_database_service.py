@@ -11,9 +11,9 @@ class BlogDatabaseService:
         self.session: Session = next(self.get_session())
         
     @staticmethod
-    def check_valid_uuid(blog_id):
+    def check_valid_uuid(id):
         try:
-            if uuid.UUID(blog_id):
+            if uuid.UUID(id):
                 return True
         except ValueError:
             return False
@@ -24,11 +24,12 @@ class BlogDatabaseService:
     
     def create_blog(self, user_id: str, blog):
         # get user from database
-        user = UserDatabaseService(self.engine).get_user_by_id(user_id)    
+        user = UserDatabaseService(self.engine).get_user_by_id(str(user_id))    
         if user:    
             blog = Blog(title=blog.title,
                     content=blog.content,
-                    author=user)
+                    author_id=user.id,
+                    published_at=datetime.now(timezone.utc))
             self.session.add(blog)
             self.session.commit()
             self.session.refresh(blog)
